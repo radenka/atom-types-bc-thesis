@@ -1,1 +1,3 @@
-# bc-thesis
+# atom-types-bc-thesis
+
+Welcome! 
