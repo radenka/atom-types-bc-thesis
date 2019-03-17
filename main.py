@@ -23,7 +23,7 @@ parser.add_argument("classificator",
                          "\n\t'hybrid' "
                          "\n\t'hbo' "
                          "\n\t'group' "
-                         "\n\t'partner' "
+                         "\n\t'partners' "
                          "\n\t'global' "
                     )
 args = parser.parse_args()
@@ -42,9 +42,9 @@ def check_arguments():
             "\nEnd of program.")
         sys.exit(1)
 
-    if args.classificator not in ['hybrid', 'hbo', 'group', 'partner', 'global']:
+    if args.classificator not in ['hybrid', 'hbo', 'group', 'partners', 'global']:
         print(
-            "ERROR: Wrong \"classificator\" argument. Use one of: 'hybrid', 'hbo', 'group', 'partner', 'global'."
+            "ERROR: Wrong \"classificator\" argument. Use one of: 'hybrid', 'hbo', 'group', 'partners', 'global'."
             "\nEnd of program.")
         sys.exit(1)
 
@@ -64,6 +64,6 @@ if __name__ == "__main__":
         ret = molecs[0]
         for i in range(1, len(molecs)):
             ret = ret.union(molecs[i])
-        print(ret)
+        print(sorted(list(ret)))
 
 
