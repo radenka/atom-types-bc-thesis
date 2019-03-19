@@ -1,8 +1,7 @@
-from rdkit import Chem
 import argparse
 import sys
 import os
-from molecule_set import MoleculeSet
+from classification import Classification
 import pprint
 
 parser = argparse.ArgumentParser(prog='ATClass',
@@ -22,7 +21,7 @@ parser.add_argument("classificator",
                          "\nSelect one of these:"
                          "\n\t'hybrid' "
                          "\n\t'hbo' "
-                         "\n\t'group' "
+                         "\n\t'substruct' "
                          "\n\t'partners' "
                          "\n\t'global' "
                     )
@@ -42,9 +41,9 @@ def check_arguments():
             "\nEnd of program.")
         sys.exit(1)
 
-    if args.classificator not in ['hybrid', 'hbo', 'group', 'partners', 'global']:
+    if args.classificator not in ['hybrid', 'hbo', 'substruct', 'partners', 'global']:
         print(
-            "ERROR: Wrong \"classificator\" argument. Use one of: 'hybrid', 'hbo', 'group', 'partners', 'global'."
+            "ERROR: Wrong \"classificator\" argument. Use one of: 'hybrid', 'hbo', 'substruct', 'partners', 'global'."
             "\nEnd of program.")
         sys.exit(1)
 
@@ -53,17 +52,15 @@ def check_arguments():
 
 if __name__ == "__main__":
     if check_arguments():
-        # solve in different way, create Classification class?
-        sdf_set = MoleculeSet(args.input)
-        atom_types = sdf_set.classify_atoms(args.classificator)
+        atom_types = Classification(args.input, args.classificator).get_atom_types()
         print_final = pprint.PrettyPrinter(indent=2)
-        print_final.pprint(atom_types)
+        # print_final.pprint(atom_types)
 
         # just my curiosity:
-        molecs = [set(mol) for mol in atom_types]
-        ret = molecs[0]
-        for i in range(1, len(molecs)):
-            ret = ret.union(molecs[i])
-        print(sorted(list(ret)))
+        # molecs = [set(mol) for mol in atom_types]
+        # ret = molecs[0]
+        # for i in range(1, len(molecs)):
+        #     ret = ret.union(molecs[i])
+        # print(sorted(list(ret)))
 
 
