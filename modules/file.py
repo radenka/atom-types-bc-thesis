@@ -9,13 +9,13 @@ def create_output_paths(sdf_name):
         os.mknod(f'outputs/{sdf_name}_patterns.txt')
 
 
-def create_outputs(sdf_name, mol_idx, molecule, all_pattern_atoms):
-    # with open(f'outputs/{sdf_name}_patterns.txt', 'a') as f:
-    #     f.write(f'Molecule n. {mol_idx}\n')
-    #     for pattern, atoms in all_pattern_atoms.items():
-    #         f.write(f'{pattern}: {atoms}\n')
-    #     f.write('\n')
-    make_sdf(mol_idx, molecule)
+def create_substruct_outputs(sdf_name, mol_idx, molecule, all_pattern_atoms):
+    with open(f'outputs/{sdf_name}_patterns.txt', 'a') as f:
+        f.write(f'Molecule n. {mol_idx}\n')
+        for pattern, atoms in all_pattern_atoms.items():
+            f.write(f'{pattern}: {atoms}\n')
+        f.write('\n')
+    # make_sdf(mol_idx, molecule)
 
 
 def make_sdf(mol_idx, molecule):

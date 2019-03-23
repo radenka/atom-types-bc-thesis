@@ -12,6 +12,10 @@ class Classifier:
             sys.exit(1)
         self.supplier = suppl
         self.all_atom_types = []
+        # used in names of output files
+        self.sdf_name = sdf[:-4]
+        # SDMolSupplier support indexing, class Mol *doesn't*
+        # mol.GetNumAtoms(onlyExplicit=False)  # counts Hs, too
 
     @abstractmethod
     def classify_atoms(self):
@@ -22,7 +26,8 @@ class Classifier:
 
     # DO THIS LATER
     def create_atom_types_file(self):
-        # use data stored in self.atom_types, gained using classify_atoms method
+        # creates txt file of atom types assigned to atoms in given molecule set
+        # use data stored in self.atom_types gained through classify_atoms() method
         pass
 
 

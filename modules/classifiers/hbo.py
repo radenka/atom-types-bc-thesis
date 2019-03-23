@@ -1,14 +1,27 @@
 from modules.classifier import Classifier
-
+from rdkit import Chem
 
 class HBOClassifier(Classifier):
 
     def __init__(self, input_sdf):
         super().__init__(input_sdf)
 
-    # TODO
+    def create_bond_sign(self, hbo):
+        bond_sign = ''
+        if hbo.is_integer():
+            bond_sign = str(int(hbo))
+        else:
+            bond_sign = 'A'
+        return bond_sign
+
     def get_hbo(self, atom):
-        return f'{atom.GetSymbol()}#'
+        hbo = 1.0
+        for bond in atom.GetBonds():
+            if bond.GetBondTypeAsDouble() > hbo:
+                hbo = bond.GetBondTypeAsDouble()
+        bond_sign = self.create_bond_sign(hbo)
+        atom_type = f'{atom.GetSymbol()}~{bond_sign}'
+        return atom_type
 
     def classify_atoms(self):
         for mol in self.supplier:

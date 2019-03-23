@@ -5,17 +5,17 @@ import sys
 
 def load_arguments():
     parser = argparse.ArgumentParser(prog='ATTYC: ATom TYpe Classification',
-                                     description="Atom type assigning based on chemical properties of atoms."
-                                                 " Used for parametrization of empirical methods for partial atomic"
-                                                 " charges calculation."
-                                                 "\nEXIT STATUS:",
+                                     description='Atom type assigning based on chemical properties of atoms.'
+                                                 ' Used for parametrization of empirical methods for partial atomic'
+                                                 ' charges calculation.'
+                                                 '\nEXIT STATUS:',
                                      epilog='End of help block. Now try it yourself. Good luck!'
                                      )
 
-    parser.add_argument("input_sdf",
+    parser.add_argument('input_sdf',
                         type=str,
-                        help="SDF file to process.")
-    parser.add_argument("classifier",
+                        help='SDF file to process.')
+    parser.add_argument('classifier',
                         type=str,
                         help="Atomic property that atom types assigned to atoms are derived from."
                              "\nSelect one of these:"
@@ -25,9 +25,12 @@ def load_arguments():
                              "\n\t'partners' "
                              "\n\t'global' "
                         )
-    parser.add_argument("--output_file",
-                        action="store_true",
+    parser.add_argument('--output_file',
+                        action='store_true',
                         help='Atom types output will be written to text file.')
+    parser.add_argument('--verbose',
+                        action='store_true',
+                        help='Atom types output will be printed on screen.')
     args = parser.parse_args()
     return args
 

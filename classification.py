@@ -1,18 +1,26 @@
 from rdkit import Chem
-import file
-import utils
+from modules import file
 import sys
 
 # make automatic saving of molecules into separate sdf files -> DONE!
 # TODO:
 #   create labels for atom types based on substructures
-#   create substructure storage
+#   create substructure text file and implement its loading into ATTYC
+#
 #   covert numeric representation (mol.GetSubstructureMatches() output) of atoms into atom type labels
 #   and assign atom types to appropriate atoms
+#
+
+
+# 19. 3. consultation:
+# atom types output = text file with assigned atom types to specific atoms (could be based on nested list output?)
+# effective atom types assigning: detect substructures from small ones to bigger ones (e. g. C(=O) -> C(=O)[OH])
+# how to do it?
+
 
 class Classification:
     def __init__(self, sdf_file, classificator):
-        suppl = Chem.SDMolSupplier(sdf_file, removeHs=False) #
+        suppl = Chem.SDMolSupplier(sdf_file, removeHs=False)
         if len(suppl) < 1:
             print("ERROR: SDF file doesn't contain any molecules. Check it and try again.\n"
                   "End of program.")
@@ -46,13 +54,18 @@ class Classification:
         atom_types = []
 
         # better transform to dictionary of SMILES: labels of atom types
-        # import patterns from a dictionary? list? (depends on atom type labels representation) from different module
-        patterns = ['C(=O)[OH]', 'C(=O)', 'C[OH]']
+        # import patterns from external txt file
+        # SMARTS for carboxylic acid gives the same results as appropriate SMILES but returns the first carbon only
+        # carboxylic acid '[$([$([C;$(C=[$([O;D1;$(O=C)])])]);$(C[$([O;$([H1&-0,H0&-1])])]);$(C[#6,#1])])]'
+        # ether [#6]O[#6] (includes esters, too)
+        # disulfide [#6]SS[#6]
+        patterns = ['[#6]SS[#6]'] # C(=O)[OH]', 'C(=O)', 'C[OH]'
         all_pattern_atoms = {}
         for pattern in patterns:
             pattern_atoms = molecule.GetSubstructMatches(Chem.MolFromSmarts(pattern))
-
+            # if mol_idx == 460:
             if len(pattern_atoms) > 0:
+                print('Molecule no.', mol_idx)
                 # just for my use
                 all_pattern_atoms[pattern] = str(pattern_atoms)
                 file.create_output_paths(self.sdf_name)
@@ -75,7 +88,7 @@ class Classification:
         # utils.create_mol_from_pattern('C(=O)[OH]', 'outputs/testmol.sdf')
 
         for i, mol in enumerate(self.molecules):
-            print('Molecule no.', i)
+            # print('Molecule no.', i)
             if self.classificator == "substruct":
 
                 # Mol object doesn't have .GetName() method, necessary to keep reference through its index in SDFile
