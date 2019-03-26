@@ -1,66 +1,47 @@
-import argparse
-import sys
-import os
-from classification import Classification
+from attyc.arguments import load_arguments, check_arguments
+from attyc.classifiers.hybrid import HybridClassifier
+from attyc.classifiers.hbo import HBOClassifier
+from attyc.classifiers.partners import PartnersClassifier
+from attyc.classifiers.substruct import SubstructClassifier
 import pprint
 
-parser = argparse.ArgumentParser(prog='ATClass',
-                                 description="Atom type assigning based on chemical properties of atoms."
-                                             " Used for parametrization of empirical methods for partial atomic"
-                                             " charges calculation."
-                                             "\nEXIT STATUS:",
-                                 epilog='End of help block. Now try it yourself. Good luck!'
-                                 )
 
-parser.add_argument("input",
-                    type=str,
-                    help="SDF file to process.")
-parser.add_argument("classificator",
-                    type=str,
-                    help="Atomic property that atom type assigned to atom is derived from."
-                         "\nSelect one of these:"
-                         "\n\t'hybrid' "
-                         "\n\t'hbo' "
-                         "\n\t'substruct' "
-                         "\n\t'partners' "
-                         "\n\t'global' "
-                    )
-args = parser.parse_args()
+def perform_classification(input_sdf, classifier, file_output, screen_output):
+    # TODO:
+    # cutting name of sdfile from given path (/home/radenka/Documents/set01.sdf)
+    # get_statistics() function - prints out detected atom types and their count
 
+    if check_arguments(input_sdf, classifier, file_output, screen_output):
+        cl = None
+        if classifier == 'hybrid':   # sign '#'
+            cl = HybridClassifier(input_sdf)
+        if classifier == 'hbo':      # sign '~'
+            cl = HBOClassifier(input_sdf)
+        if classifier == 'partners':  # sign ':'
+            cl = PartnersClassifier(input_sdf)
+        if classifier == 'substruct':   # sign '$'
+            cl = SubstructClassifier(input_sdf)
+        cl.classify_atoms()
 
-def check_arguments():
-    if not os.path.exists(args.input):
-        print(
-            "ERROR: Wrong \"input\" argument. Check if the file and path directories exist."
-            "\nEnd of program.")
-        sys.exit(1)
-
-    if not os.path.isfile(args.input):
-        print(
-            "ERROR: Wrong \"input\" argument. Regular file not found in given path."
-            "\nEnd of program.")
-        sys.exit(1)
-
-    if args.classificator not in ['hybrid', 'hbo', 'substruct', 'partners', 'global']:
-        print(
-            "ERROR: Wrong \"classificator\" argument. Use one of: 'hybrid', 'hbo', 'substruct', 'partners', 'global'."
-            "\nEnd of program.")
-        sys.exit(1)
-
-    return True
+        if file_output:
+            print('Output will be written into a text file.')
+            cl.create_atom_types_file()
+        if screen_output:
+            print('Output will be printed on screen.')
+            print_final = pprint.PrettyPrinter(indent=2)
+            print_final.pprint(cl.get_atom_types())
 
 
-if __name__ == "__main__":
-    if check_arguments():
-        atom_types = Classification(args.input, args.classificator).get_atom_types()
-        print_final = pprint.PrettyPrinter(indent=2)
-        # print_final.pprint(atom_types)
-
-        # just my curiosity:
-        # molecs = [set(mol) for mol in atom_types]
+        # molecs = [set(mol) for mol in cl.all_atom_types]
         # ret = molecs[0]
         # for i in range(1, len(molecs)):
         #     ret = ret.union(molecs[i])
         # print(sorted(list(ret)))
 
+        return cl.get_atom_types()
 
+
+if __name__ == "__main__":
+    args = load_arguments()
+    if args:
+        perform_classification(args.input_sdf, args.classifier, args.file_output, args.verbose)

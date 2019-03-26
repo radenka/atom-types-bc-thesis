@@ -1,4 +1,4 @@
-from modules.classifier import Classifier
+from attyc.classifier import Classifier
 
 
 class PartnersClassifier(Classifier):

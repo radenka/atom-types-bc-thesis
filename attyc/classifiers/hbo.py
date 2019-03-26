@@ -1,5 +1,5 @@
-from modules.classifier import Classifier
-from rdkit import Chem
+from attyc.classifier import Classifier
+
 
 class HBOClassifier(Classifier):
 
@@ -19,8 +19,7 @@ class HBOClassifier(Classifier):
         for bond in atom.GetBonds():
             if bond.GetBondTypeAsDouble() > hbo:
                 hbo = bond.GetBondTypeAsDouble()
-        bond_sign = self.create_bond_sign(hbo)
-        atom_type = f'{atom.GetSymbol()}~{bond_sign}'
+        atom_type = f'{atom.GetSymbol()}~{self.create_bond_sign(hbo)}'
         return atom_type
 
     def classify_atoms(self):

@@ -25,7 +25,7 @@ def load_arguments():
                              "\n\t'partners' "
                              "\n\t'global' "
                         )
-    parser.add_argument('--output_file',
+    parser.add_argument('--file_output',
                         action='store_true',
                         help='Atom types output will be written to text file.')
     parser.add_argument('--verbose',
@@ -35,7 +35,7 @@ def load_arguments():
     return args
 
 
-def check_arguments(input_sdf, classifier):
+def check_arguments(input_sdf, classifier, file_output, screen_output):
     if not os.path.exists(input_sdf):
         print(
             "ERROR: Wrong \"input\" argument. Check if the file and path directories exist."
@@ -48,9 +48,16 @@ def check_arguments(input_sdf, classifier):
             "\nEnd of program.")
         sys.exit(1)
 
+    if type(file_output) != bool or type(screen_output) != bool:
+        print(
+            "ERROR: Wrong \"output\" argument. Use boolean only."
+            "\nEnd of program.")
+        sys.exit(1)
+
     if classifier not in ['hybrid', 'hbo', 'substruct', 'partners', 'global']:
         print(
             "ERROR: Wrong \"classifier\" argument. Use one of these: 'hybrid', 'hbo', 'substruct', 'partners', 'global'."
             "\nEnd of program.")
         sys.exit(1)
+
     return True
