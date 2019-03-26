@@ -1,0 +1,33 @@
+SMARTS for carboxylic acid gives the same results as appropriate SMILES but returns the first carbon only
+	carboxylic acid '[$([$([C;$(C=[$([O;D1;$(O=C)])])]);$(C[$([O;$([H1&-0,H0&-1])])]);$(C[#6,#1])])]'
+
+carboxylic acid ver. 2 [CX3](=O)[OX2H1] doesn't detect Hs, returns tuples of 3 atoms
+	charged carboxylic acid [CX3](=O)[OX1-] results found
+oxygen anion O- [OX1-] result s found, charged NO2 groups included
+ether [#6]O[#6] (includes esters, too)
+aldehyde C(=O)[H] detects Hs, too!
+carbonic ester C[CX3](=[OX1])[OX2]C
+or [CX3](=[OX1])[OX2]C -> returns substances composed of substructures as NC(=O)OC, more result than above
+nitrile group [NX1]#[CX2]
+nitroso group [NX2]=[OX1]; N(=O) is detected also in nitro groups - SMARTS is more precise
+nitro group:
+	no outputs for [NX3](=O)=O
+		-> use [NX3+](=O)[O-] only
+anhydride [CX3](=[OX1])[OX2][CX3](=[OX1])
+halogens [F,Cl,Br,I]
+disulfide [#6]SS[#6], SMARTS *SS* detects triple Ss, C-SS-H, S rings, 
+	- if H detected, assign appropriate atom type to him (S-H)
+thiol, sulfide and disulfide sulphur [SX2] 
+	- S connected with P detected (P-SH)
+	- better: '*-[SX2]-*', returns tuple of 3 atoms
+any atom attached to S with double bond *=[SX1]
+	thiocarbonyl [CX2,CX3]=[SX1]
+	other attached elements excluding C [!#6]=S
+sulfones [SX4](=[OX1])(=[OX1]), better to use [SX4](=*)(=*)(-[!O])(-[!O])
+	- hits all kinds of sulfone derivates (including =N)
+sulfonic acid functional group [SX4](=[OX1])(=[OX1])[OX2,OX1]; 
+	- groups SO3- detected
+	
+	
+
+	
