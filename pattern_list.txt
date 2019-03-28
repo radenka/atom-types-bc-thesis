@@ -1,33 +1,54 @@
-SMARTS for carboxylic acid gives the same results as appropriate SMILES but returns the first carbon only
-	carboxylic acid '[$([$([C;$(C=[$([O;D1;$(O=C)])])]);$(C[$([O;$([H1&-0,H0&-1])])]);$(C[#6,#1])])]'
+alkynes [CX2]#[CX2]
 
 carboxylic acid ver. 2 [CX3](=O)[OX2H1] doesn't detect Hs, returns tuples of 3 atoms
 	charged carboxylic acid [CX3](=O)[OX1-] results found
 oxygen anion O- [OX1-] result s found, charged NO2 groups included
 ether [#6]O[#6] (includes esters, too)
+	- better to use [CX4,c]O[CX4,c]; hits all required Cs and skips Cs of carboxylic acids. Hits ethers of aromatic substances (small c).
 aldehyde C(=O)[H] detects Hs, too!
 carbonic ester C[CX3](=[OX1])[OX2]C
 or [CX3](=[OX1])[OX2]C -> returns substances composed of substructures as NC(=O)OC, more result than above
-nitrile group [NX1]#[CX2]
-nitroso group [NX2]=[OX1]; N(=O) is detected also in nitro groups - SMARTS is more precise
-nitro group:
-	no outputs for [NX3](=O)=O
-		-> use [NX3+](=O)[O-] only
+	- [CX3](=[OX1])[OX2-!C&!H] results not found
 anhydride [CX3](=[OX1])[OX2][CX3](=[OX1])
+alcohols [CX4,c][OX2][H]
+	- detects Hs, too
+carbonyl group [!O&!o]~C(=[OX1])~[!O&!o] - uselful?
+	- C=[OX1] maybe better
+
 halogens [F,Cl,Br,I]
+
 disulfide [#6]SS[#6], SMARTS *SS* detects triple Ss, C-SS-H, S rings, 
-	- if H detected, assign appropriate atom type to him (S-H)
+	- if H detected, assign appropriate atom type to it (S-H)
 thiol, sulfide and disulfide sulphur [SX2] 
 	- S connected with P detected (P-SH)
 	- better: '*-[SX2]-*', returns tuple of 3 atoms
 any atom attached to S with double bond *=[SX1]
-	thiocarbonyl [CX2,CX3]=[SX1]
+	thiocarbonyl [CX2,CX3,c]=[SX1]
 	other attached elements excluding C [!#6]=S
 sulfones [SX4](=[OX1])(=[OX1]), better to use [SX4](=*)(=*)(-[!O])(-[!O])
 	- hits all kinds of sulfone derivates (including =N)
 sulfonic acid functional group [SX4](=[OX1])(=[OX1])[OX2,OX1]; 
 	- groups SO3- detected
-	
+S attached to N with single bond, always part of sulfone group [SX4](=[OX1])(=[OX1])N - returns tuple of 4 atoms
+	- idea: maybe better to define wild card atoms (*) and assign their atom type later using the element label
+
+nitrile group [NX1]#[CX2]
+nitroso group [NX2]=[OX1]; N(=O) is detected also in nitro groups - SMARTS is more precise
+nitro group:
+	no outputs for [NX3](=O)=O
+		-> use [NX3+](=O)[O-] only
+diazonium compounds N#N
+oxime [CX3]=[NX2][OX2][H], detects Hs
+azo compounds *-[NX2]=[NX2]-*; attached atoms label as "* attached to N"
+	- * represents wild card for element
+guanidine group [CX3](=[NX2][H])([NX3])[NX3]
+	- more precise variant [CX3](=[NX2][H])([NX3]([H])[H])[NX3]([H])[!H]
+imines [c,C]=[NX2][H] (do guanidine search before)
+amides [CX3](=[OX1])[NX3]([H])[H]
+	- [CX3](=[OX1])[NX3]([H])[!#1] with one attached H
+	- [CX3](=[OX1])[NX3]([!#1])[!#1] no H attached to N
+
+
 	
 
 	
