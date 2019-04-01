@@ -13,25 +13,25 @@ or [CX3](=[OX1])[OX2]C -> returns substances composed of substructures as NC(=O)
 **anhydride [CX3](=[OX1])[OX2][CX3](=[OX1])
 **alcohols [CX4,c][OX2][H]
 	- detects Hs, too
-carbonyl group [!O&!o]~C(=[OX1])~[!O&!o] - uselful? -> carbonyl group in CO3- would be skipped! don't use it
+**carbonyl group [!O&!o]~C(=[OX1])~[!O&!o] - uselful? -> carbonyl group in CO3- would be skipped! don't use it
 	- C=[OX1] maybe better
 
 **halogens [F,Cl,Br,I]
 
-disulfide [#6]SS[#6], SMARTS *SS* detects triple Ss, C-SS-H, S rings, 
+**disulfide [#6]SS[#6], SMARTS *SS* detects triple Ss, C-SS-H, S rings, 
 	- if H detected, assign appropriate atom type to it (S-H)
-thiol group [SX2][H]; detect it before phosphate search (PO4) (see mol154_thiol_connectedwith_P.sdf)
-thiol, sulfide and disulfide sulphur [SX2] 
+**thiol group [SX2][H]; detect it before phosphate search (PO4) (see mol154_thiol_connectedwith_P.sdf)
+**thiol, sulfide and disulfide sulphur [SX2] 
 	- S connected with P detected (P-SH)
 	- better: '*-[SX2]-*', returns tuple of 3 atoms
-any atom attached to S with double bond *=[SX1]
+**any atom attached to S with double bond *=[SX1]
 	thiocarbonyl [CX2,CX3,c]=[SX1]
 	other attached elements excluding C [!#6]=S
-sulfones [SX4](=[OX1])(=[OX1]), better to use [SX4](=*)(=*)(-[!O])(-[!O])
+**sulfones [SX4](=[OX1])(=[OX1]), better to use [SX4](=*)(=*)(-[!O])(-[!O])
 	- hits all kinds of sulfone derivates (including =N)
-sulfonic acid functional group [SX4](=[OX1])(=[OX1])[OX2,OX1]; 
+**sulfonic acid functional group [SX4](=[OX1])(=[OX1])[OX2,OX1]; 
 	- groups SO3- detected
-S attached to N with single bond, always part of sulfone group [SX4](=[OX1])(=[OX1])N - returns tuple of 4 atoms
+**S attached to N with single bond, always part of sulfone group [SX4](=[OX1])(=[OX1])N - returns tuple of 4 atoms
 	- idea: maybe better to define wild card atoms (*) and assign their atom type later using the element sign
 
 **nitrile group [NX1]#[CX2]

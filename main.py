@@ -3,7 +3,9 @@ from attyc.classifiers.hybrid import HybridClassifier
 from attyc.classifiers.hbo import HBOClassifier
 from attyc.classifiers.partners import PartnersClassifier
 from attyc.classifiers.substruct import SubstructClassifier
+import attyc.io as IO
 import pprint
+import time
 
 
 def perform_classification(input_sdf, classifier, file_output, screen_output):
@@ -12,15 +14,17 @@ def perform_classification(input_sdf, classifier, file_output, screen_output):
     # get_statistics() function - prints out detected atom types and their count
 
     if check_arguments(input_sdf, classifier, file_output, screen_output):
+        SMARTS_and_atom_types = IO.load_atom_types()
+        # very ugly! change it ASAP!
         cl = None
         if classifier == 'hybrid':   # sign '#'
-            cl = HybridClassifier(input_sdf)
-        if classifier == 'hbo':      # sign '~'
-            cl = HBOClassifier(input_sdf)
-        if classifier == 'partners':  # sign ':'
-            cl = PartnersClassifier(input_sdf)
-        if classifier == 'substruct':   # sign '$'
-            cl = SubstructClassifier(input_sdf)
+            cl = HybridClassifier(input_sdf, SMARTS_and_atom_types)
+        elif classifier == 'hbo':      # sign '~'
+            cl = HBOClassifier(input_sdf, SMARTS_and_atom_types)
+        elif classifier == 'partners':  # sign ':'
+            cl = PartnersClassifier(input_sdf, SMARTS_and_atom_types)
+        elif classifier == 'substruct':   # sign '*'
+            cl = SubstructClassifier(input_sdf, SMARTS_and_atom_types)
         cl.classify_atoms()
 
         if file_output:
@@ -42,6 +46,9 @@ def perform_classification(input_sdf, classifier, file_output, screen_output):
 
 
 if __name__ == "__main__":
+    start = time.time()
     args = load_arguments()
     if args:
         perform_classification(args.input_sdf, args.classifier, args.file_output, args.verbose)
+    end = time.time()
+    print(end-start)

@@ -2,9 +2,8 @@ from rdkit import Chem
 from abc import abstractmethod
 import sys
 
-
 class Classifier:
-    def __init__(self, sdf):
+    def __init__(self, sdf, SMARTS_and_atom_types):
         suppl = Chem.SDMolSupplier(sdf, removeHs=False)
         if len(suppl) < 1:
             print("ERROR: SDF file doesn't contain any molecules. Check it and try again.\n"
@@ -16,6 +15,7 @@ class Classifier:
         self.sdf_name = sdf[:-4]
         # SDMolSupplier support indexing, class Mol *doesn't*
         # mol.GetNumAtoms(onlyExplicit=False)  # counts Hs, too
+        self.SMARTS_and_atom_types = SMARTS_and_atom_types
 
     @abstractmethod
     def classify_atoms(self):

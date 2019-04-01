@@ -3,8 +3,8 @@ from attyc.classifier import Classifier
 
 class PartnersClassifier(Classifier):
 
-    def __init__(self, input_sdf):
-        super().__init__(input_sdf)
+    def __init__(self, input_sdf, SMARTS_and_atom_types):
+        super().__init__(input_sdf, SMARTS_and_atom_types)
 
     def get_partners(self, atom):
         atom_type = atom.GetSymbol() + ":"
