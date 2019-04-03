@@ -3,8 +3,9 @@ from attyc.classifier import Classifier
 
 class PartnersClassifier(Classifier):
 
-    def __init__(self, input_sdf, SMARTS_and_atom_types):
-        super().__init__(input_sdf, SMARTS_and_atom_types)
+    def __init__(self):
+        super().__init__()
+        self.name = 'partners'
 
     def get_partners(self, atom):
         atom_type = atom.GetSymbol() + ":"
@@ -16,8 +17,8 @@ class PartnersClassifier(Classifier):
         atom_type += "".join(neighs)
         return atom_type
 
-    def classify_atoms(self):
-        for mol in self.supplier:
+    def classify_atoms(self, supplier):
+        for mol in supplier:
             atom_types = []
             for i in range(mol.GetNumAtoms()):
                 atom_types.append(self.get_partners(mol.GetAtomWithIdx(i)))

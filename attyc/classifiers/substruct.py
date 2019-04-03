@@ -1,16 +1,19 @@
 from attyc.classifier import Classifier
 from rdkit import Chem
 from collections import Counter
+import pprint
+from ..io import load_SMARTS_and_atom_types
 from ..io import create_output_paths, create_substruct_outputs
 from ..utils import create_mol_from_pattern
 
 
 class SubstructClassifier(Classifier):
-    def __init__(self, input_sdf, SMARTS_and_atom_types):
-        super().__init__(input_sdf, SMARTS_and_atom_types)
+    def __init__(self):
+        super().__init__()
+        self.name = 'substruct'
 
     def classifify_remaining_H(self, hydrogen):
-        return str(hydrogen.GetNeighbors()[0].GetSymbol())
+        return '-' + str(hydrogen.GetNeighbors()[0].GetSymbol())
         # another lines of code may be added, depends on search of aromatic substructures
 
     def complete_classification(self, atom_types, molecule, counter):
@@ -37,7 +40,7 @@ class SubstructClassifier(Classifier):
                     for neigh in atom.GetNeighbors():
                         # aromatic Hs detection
                         if neigh.GetAtomicNum() == 1:
-                            atom_types[neigh.GetIdx()] = f'A{atom.GetSymbol()}'
+                            atom_types[neigh.GetIdx()] = f'-{atom.GetSymbol()}A'
 
     def get_substructures(self, mol_idx, molecule, counter):
         # list where the atom type labels will be put to
@@ -45,11 +48,12 @@ class SubstructClassifier(Classifier):
         make_file = False
 
         self.analyze_aromatic_rings(molecule, assigned_atom_types, counter)
-        for pattern, atom_types in self.SMARTS_and_atom_types:
+        SMARTS_loaded_atom_types = load_SMARTS_and_atom_types()
+        for pattern, loaded_atom_types in SMARTS_loaded_atom_types:
             if molecule.HasSubstructMatch(Chem.MolFromSmarts(pattern)):
                 pattern_atoms = molecule.GetSubstructMatches(Chem.MolFromSmarts(pattern))
                 for atom_tuple in pattern_atoms:
-                    for atm_idx, atom_type in zip(atom_tuple, atom_types):
+                    for atm_idx, atom_type in zip(atom_tuple, loaded_atom_types):
                         if assigned_atom_types[atm_idx] is None:
                             assigned_atom_types[atm_idx] = atom_type
                 # just for my own use
@@ -67,7 +71,7 @@ class SubstructClassifier(Classifier):
                 # if make_file:
                 #     create_substruct_outputs(self.sdf_name, mol_idx, molecule)
 
-            # move completion one level higher - complete classification at 'molecule set' level ? better ?
+            # move completion higher - complete classification at 'molecule set' level ? better ?
         self.complete_classification(assigned_atom_types, molecule, counter)
         return assigned_atom_types
         # !!! get molecule name: mol.GetProp('_Name') -> returns NSC_1000089, NSC_100992 etc.
@@ -75,12 +79,14 @@ class SubstructClassifier(Classifier):
     # former version, before "removeHS" in supplier was set to False:
     # mol2 = Chem.AddHs(mol, addCoords=True)
 
-    def classify_atoms(self):
+    def classify_atoms(self, supplier):
         # create_mol_from_pattern('C[CX3](=[OX1])[OX2]C', 'outputs/testmol_modified_ester.sdf')
         counter = Counter()
-        for i, mol in enumerate(self.supplier):
+        for i, mol in enumerate(supplier):
             # print('Molecule no.', i)
                 self.all_atom_types.append(
                     self.get_substructures(i, mol, counter)
                 )
-        print(counter)
+        print_final = pprint.PrettyPrinter(indent=2)
+        # print_final.pprint(counter)
+        # print(len(counter))

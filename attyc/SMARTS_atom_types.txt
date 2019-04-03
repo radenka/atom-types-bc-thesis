@@ -1,0 +1,35 @@
+[F]						plain				F
+[Cl]						plain				Cl			
+[Br]						plain				Br
+[I]						plain				I
+[CX2]#[CX2]					alkyne,alkyne			alkyne carbons
+[!#15]-[SX2][H]					-S,thio,-S			thiol group with attached atom
+[PX4](=[X1])(-*)(-*)(-*)			phosphate,=P,-P,-P,-P		phosphate group
+[CX3](=[OX1])[OX2][CX3](=[OX1])			COOH,=COOH,e(s)ther,COOH,=COOH	anhydride  *atom type of =[OX1], should be O*=C type assigned instead?
+[CX3](=[OX1])[OX2]C				COOH,=COOH,e(s)ther,-O		ester  *revise atom type of last C (somekind of estheric/etheric?)
+[CX3](=O)[OX1-]					COOH,=COOH,charged-		charged carboxylic acid
+[CX3](=O)[OX2][H1]				COOH,=COOH,-COOH,O		carboxylic acid
+[CX4,c]O[CX4,c]					-O,e(s)ther,-O			ether
+[CX4,c][OX2][H]					-O,OH,-O			alcohol group
+[NX3+](=O)[O-]					nitro,nitro,nitro		nitro group
+[OX1-;!$([OX1-]C(=O))&!$([OX1-]N(=O))]		charged-			oxygen anion
+*=[SX1]						=S,=thio			thiocarbonyl and other *=S groups (e.g. P=S) *better before amin/des
+[!#16]-SS-[!#16]				-S,thio,thio,-S			disulfide pattern
+[CX3](=[OX1])[NX3]([H])[H] 			amide,=COOH,amide,amide,amide	primary amide
+[CX3](=[OX1])[NX3]([H])[!#1]			amide,=COOH,amide,amide,-N	secondary amide *H:'attached to N' instead of explicit 'amide' type?
+[CX3](=[OX1])[NX3]([!#1])[!#1]			amide,=COOH,amide,-N,-N		tertiary amide
+[C,c]=[OX1]					carbonyl,carbonyl		carbonyl group of aldehydes, ketones, not carboxylic acids or amides
+[NX1]#[CX2]					nitrile,nitrile			nitrile group
+N#N						diazon,diazon			diazonium group  *attached atoms not detected because of mol13021.sdf
+[CX3]=[NX2][OX2][H]				=N,=C,OH,-O			oxime
+[CX3](=[NX2][H])([NX3]([H])[H])[NX3]([H])[!H]	guan,=C,-N,amine,amine,amine,amine,amine,-N		guanidine group
+[c,C]=[NX2][H]					=N,=C,-N			imine group
+[SX4](=[OX1])(=[OX1])[OX2,OX1]			sulfonic,=S,=S,-S		sulfonic acid group   *ions detected earlier
+[SX4](=*)(=*)(-[!O])(-[!O])			sulfone,=S,=S,-S,-S		sulfone group + derivates
+[!#16]-[SX2]-[!#16]				-S,thio,-S			sulfide  *better to search after sulfones etc. (O-S-O  groups)
+[NX3;!$(NC=O)]([H])[H]				amine,amine,amine		primary amine
+[NX3;!$(NC=O)]([H])([!#1])[!#1]			amine,amine,-N,-N		secondary amine
+[NX3;!$(NC=O)]([!#1])([!#1])[!#1]		amine,-N,-N,-N			tertiary amine
+*-[NX2]=[NX2]-*					-N,azo,azo,-N			azo compound
+[NX2]=[OX1]					=O,=N				nitroso group     *rename both to 'nitroso'?
+[!#6][OX2][H]					-O,OH,-O			hydroxyl group (do after all sulfones, acis, phosphates etc.)

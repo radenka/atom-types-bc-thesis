@@ -1,54 +1,42 @@
-from attyc.arguments import load_arguments, check_arguments
-from attyc.classifiers.hybrid import HybridClassifier
-from attyc.classifiers.hbo import HBOClassifier
-from attyc.classifiers.partners import PartnersClassifier
-from attyc.classifiers.substruct import SubstructClassifier
-import attyc.io as IO
-import pprint
+import argparse
+import attyc
 import time
 
 
-def perform_classification(input_sdf, classifier, file_output, screen_output):
-    # TODO:
-    # cutting name of sdfile from given path (/home/radenka/Documents/set01.sdf)
-    # get_statistics() function - prints out detected atom types and their count
+def load_arguments():
+    parser = argparse.ArgumentParser(prog='ATTYC: ATom TYpe Classification',
+                                     description='Atom type assigning based on chemical properties of atoms.'
+                                                 ' Used for parametrization of empirical methods for partial atomic'
+                                                 ' charges calculation.',
+                                     epilog='End of help block. Try it yourself. Good luck!'
+                                     )
 
-    if check_arguments(input_sdf, classifier, file_output, screen_output):
-        SMARTS_and_atom_types = IO.load_atom_types()
-        # very ugly! change it ASAP!
-        cl = None
-        if classifier == 'hybrid':   # sign '#'
-            cl = HybridClassifier(input_sdf, SMARTS_and_atom_types)
-        elif classifier == 'hbo':      # sign '~'
-            cl = HBOClassifier(input_sdf, SMARTS_and_atom_types)
-        elif classifier == 'partners':  # sign ':'
-            cl = PartnersClassifier(input_sdf, SMARTS_and_atom_types)
-        elif classifier == 'substruct':   # sign '*'
-            cl = SubstructClassifier(input_sdf, SMARTS_and_atom_types)
-        cl.classify_atoms()
-
-        if file_output:
-            print('Output will be written into a text file.')
-            cl.create_atom_types_file()
-        if screen_output:
-            print('Output will be printed on screen.')
-            print_final = pprint.PrettyPrinter(indent=2)
-            print_final.pprint(cl.get_atom_types())
-
-
-        # molecs = [set(mol) for mol in cl.all_atom_types]
-        # ret = molecs[0]
-        # for i in range(1, len(molecs)):
-        #     ret = ret.union(molecs[i])
-        # print(sorted(list(ret)))
-
-        return cl.get_atom_types()
+    parser.add_argument('input_sdf',
+                        type=str,
+                        help='SDF file to process.')
+    parser.add_argument('classifier',
+                        type=str,
+                        help="Atomic property that atom types assigned to atoms are derived from."
+                             "\nSelect one of these:"
+                             "\n\t'hybrid' "
+                             "\n\t'hbo' "
+                             "\n\t'substruct' "
+                             "\n\t'partners' "
+                        )
+    parser.add_argument('--file_output',
+                        action='store_true',
+                        help='Atom types output will be written to text file.')
+    parser.add_argument('--screen_output',
+                        action='store_true',
+                        help='Atom types output will be printed on screen.')
+    args = parser.parse_args()
+    return args
 
 
 if __name__ == "__main__":
     start = time.time()
     args = load_arguments()
     if args:
-        perform_classification(args.input_sdf, args.classifier, args.file_output, args.verbose)
+        attyc.classify_atoms(args.input_sdf, args.classifier, args.file_output, args.screen_output)
     end = time.time()
-    print(end-start)
+    print('\nExecution time:', end-start)

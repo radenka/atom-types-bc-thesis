@@ -3,8 +3,9 @@ from attyc.classifier import Classifier
 
 class HBOClassifier(Classifier):
 
-    def __init__(self, input_sdf, SMARTS_and_atom_types):
-        super().__init__(input_sdf, SMARTS_and_atom_types)
+    def __init__(self):
+        super().__init__()
+        self.name = 'hbo'
 
     def create_bond_sign(self, hbo):
         bond_sign = ''
@@ -22,8 +23,8 @@ class HBOClassifier(Classifier):
         atom_type = f'{atom.GetSymbol()}~{self.create_bond_sign(hbo)}'
         return atom_type
 
-    def classify_atoms(self):
-        for mol in self.supplier:
+    def classify_atoms(self, supplier):
+        for mol in supplier:
             atom_types = []
             for i in range(mol.GetNumAtoms()):
                 atom_types.append(self.get_hbo(mol.GetAtomWithIdx(i)))
