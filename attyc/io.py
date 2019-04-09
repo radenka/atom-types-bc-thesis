@@ -2,6 +2,7 @@ from rdkit import Chem
 import os
 import sys
 import re
+from pathlib import Path
 
 #### just for my use ###########################
 
@@ -42,7 +43,8 @@ def load_SMARTS_and_atom_types():
     # print(os.path.exists('SMARTS_atom_types.txt')) # False if the file is saved in the same directory as this script
 
     # print(os.path.abspath(os.path.realpath(__file__)))
-    current_dir = os.path.basename(os.path.dirname(__file__))
+    current_dir = os.path.dirname(__file__)
+    # print('Current directory of io.py:', current_dir) -> attyc
     if not os.path.exists(os.path.join(current_dir, 'SMARTS_atom_types.txt')):
         print('ERROR: SMARTS input file not found. Check if file "SMARTS_atom_types.txt" is located in the same directory'
               'as "io.py". \n'
@@ -53,7 +55,7 @@ def load_SMARTS_and_atom_types():
     with open(os.path.join(current_dir, 'SMARTS_atom_types.txt')) as file:
         for line in file:
             try:
-                SMARTS, atom_types, functional_group = re.split(r'\s+', line, 2)
+                SMARTS, atom_types, _ = re.split(r'\s+', line, 2)
                 atom_types = atom_types.split(',')
                 SMARTS_and_atom_types.append((SMARTS, atom_types))
 
@@ -70,18 +72,19 @@ def load_SMARTS_and_atom_types():
         return SMARTS_and_atom_types
 
 
-def create_output_file_for_parametrization(input_sdf, moleculeset_atom_types, classifier):
+def create_output_file_for_parametrization(input_sdf, moleculeset_atom_types, classifier_name):
     input_filename = os.path.basename(input_sdf)
     if input_filename.endswith('.sdf'):
         input_filename = input_filename[:-4]
-    output_dir = 'ATTYC_outputs'
-    if not os.path.isdir(output_dir):
-        print(f'Creating directory {output_dir}...')
-        os.mkdir(output_dir)
-    output_filename = f'{input_filename}SDF_{classifier}.txt'
+    # returns parent directory of directory where io.py is saved
+    parent_dir = Path(__file__).resolve().parents[1]
+    output_dirname = 'ATTYC_outputs'
+    if not os.path.isdir(os.path.join(parent_dir, output_dirname)):
+        print(f'Creating directory {output_dirname}...')
+        os.mkdir(os.path.join(parent_dir, output_dirname))
+    output_filename = f'{input_filename}SDF_{classifier_name}.txt'
     print(f'Output filename: {output_filename},\n'
-          f'path: {os.path.abspath(os.path.join(output_dir, output_filename))}')
-
-    with open(os.path.join(output_dir, output_filename), 'w') as file:
+          f'path: {os.path.join(parent_dir, output_dirname, output_filename)}')
+    with open(os.path.join(parent_dir, output_dirname, output_filename), 'w') as file:
         file.writelines(','.join(mol_atom_types) + os.linesep for mol_atom_types in moleculeset_atom_types)
     print('Finished successfully.')

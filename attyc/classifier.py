@@ -1,12 +1,12 @@
 from rdkit import Chem
 from abc import abstractmethod
-import sys
+import sys, os
 
 
 class Classifier:
-    def __init__(self):
+    def __init__(self, classifier_path):
         self.all_atom_types = []
-        self.name = None
+        self.name = os.path.basename(classifier_path)[:-3]
         # used in names of output files
         # self.sdf_name = sdf[:-4]   # !!! Files that don't end with '.sdf' processed incorrectly!
         # SDMolSupplier support indexing, class Mol *doesn't*
@@ -21,3 +21,4 @@ class Classifier:
 
     def get_name(self):
         return self.name
+

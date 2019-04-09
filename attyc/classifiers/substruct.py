@@ -1,16 +1,15 @@
-from attyc.classifier import Classifier
+from ..classifier import Classifier
 from rdkit import Chem
 from collections import Counter
 import pprint
 from ..io import load_SMARTS_and_atom_types
 from ..io import create_output_paths, create_substruct_outputs
-from ..utils import create_mol_from_pattern
+# from ..utils import create_mol_from_pattern
 
 
 class SubstructClassifier(Classifier):
     def __init__(self):
-        super().__init__()
-        self.name = 'substruct'
+        super().__init__(__file__)
 
     def classifify_remaining_H(self, hydrogen):
         return '-' + str(hydrogen.GetNeighbors()[0].GetSymbol())
@@ -42,13 +41,11 @@ class SubstructClassifier(Classifier):
                         if neigh.GetAtomicNum() == 1:
                             atom_types[neigh.GetIdx()] = f'-{atom.GetSymbol()}A'
 
-    def get_substructures(self, mol_idx, molecule, counter):
+    def get_substructures(self, mol_idx, molecule, counter, SMARTS_loaded_atom_types):
         # list where the atom type labels will be put to
         assigned_atom_types = [None] * molecule.GetNumAtoms()
         make_file = False
-
         self.analyze_aromatic_rings(molecule, assigned_atom_types, counter)
-        SMARTS_loaded_atom_types = load_SMARTS_and_atom_types()
         for pattern, loaded_atom_types in SMARTS_loaded_atom_types:
             if molecule.HasSubstructMatch(Chem.MolFromSmarts(pattern)):
                 pattern_atoms = molecule.GetSubstructMatches(Chem.MolFromSmarts(pattern))
@@ -82,10 +79,11 @@ class SubstructClassifier(Classifier):
     def classify_atoms(self, supplier):
         # create_mol_from_pattern('C[CX3](=[OX1])[OX2]C', 'outputs/testmol_modified_ester.sdf')
         counter = Counter()
+        SMARTS_loaded_atom_types = load_SMARTS_and_atom_types()
         for i, mol in enumerate(supplier):
             # print('Molecule no.', i)
                 self.all_atom_types.append(
-                    self.get_substructures(i, mol, counter)
+                    self.get_substructures(i, mol, counter, SMARTS_loaded_atom_types)
                 )
         print_final = pprint.PrettyPrinter(indent=2)
         # print_final.pprint(counter)

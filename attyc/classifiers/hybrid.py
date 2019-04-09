@@ -1,10 +1,9 @@
-from attyc.classifier import Classifier
+from ..classifier import Classifier
 
 
 class HybridClassifier(Classifier):
     def __init__(self):
-        super().__init__()
-        self.name = 'hybrid'
+        super().__init__(__file__)
 
     def get_hybridization(self, atom):
         return f'{atom.GetSymbol()}#{str(atom.GetHybridization())}'

@@ -1,11 +1,10 @@
-from attyc.classifier import Classifier
+from ..classifier import Classifier
 
 
 class HBOClassifier(Classifier):
 
     def __init__(self):
-        super().__init__()
-        self.name = 'hbo'
+        super().__init__(__file__)
 
     def create_bond_sign(self, hbo):
         bond_sign = ''

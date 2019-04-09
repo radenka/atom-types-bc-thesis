@@ -1,11 +1,10 @@
-from attyc.classifier import Classifier
+from ..classifier import Classifier
 
 
 class PartnersClassifier(Classifier):
 
     def __init__(self):
-        super().__init__()
-        self.name = 'partners'
+        super().__init__(__file__)
 
     def get_partners(self, atom):
         atom_type = atom.GetSymbol() + ":"
