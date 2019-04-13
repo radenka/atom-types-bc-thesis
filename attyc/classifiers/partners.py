@@ -16,9 +16,8 @@ class PartnersClassifier(Classifier):
         atom_type += "".join(neighs)
         return atom_type
 
-    def classify_atoms(self, supplier):
-        for mol in supplier:
-            atom_types = []
-            for i in range(mol.GetNumAtoms()):
-                atom_types.append(self.get_partners(mol.GetAtomWithIdx(i)))
-            self.all_atom_types.append(atom_types)
+    def get_atom_types(self, mol):
+        mol_atom_types = []
+        for i in range(mol.GetNumAtoms()):
+            mol_atom_types.append(self.get_partners(mol.GetAtomWithIdx(i)))
+        return mol_atom_types

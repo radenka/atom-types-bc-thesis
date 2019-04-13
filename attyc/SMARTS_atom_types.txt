@@ -8,7 +8,7 @@
 [CX3](=[OX1])[OX2][CX3](=[OX1])			COOH,=COOH,e(s)ther,COOH,=COOH	anhydride  *atom type of =[OX1], should be O*=C type assigned instead?
 [CX3](=[OX1])[OX2]C				COOH,=COOH,e(s)ther,-O		ester  *revise atom type of last C (somekind of estheric/etheric?)
 [CX3](=O)[OX1-]					COOH,=COOH,charged-		charged carboxylic acid
-[CX3](=O)[OX2][H1]				COOH,=COOH,-COOH,O		carboxylic acid
+[CX3](=O)[OX2][H1]				COOH,=COOH,-COOH,-O		carboxylic acid
 [CX4,c]O[CX4,c]					-O,e(s)ther,-O			ether
 [CX4,c][OX2][H]					-O,OH,-O			alcohol group
 [NX3+](=O)[O-]					nitro,nitro,nitro		nitro group
