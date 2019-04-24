@@ -22,7 +22,7 @@
 [NX1]#[CX2]					nitrile,nitrile			nitrile group
 N#N						diazon,diazon			diazonium group  *attached atoms not detected because of mol13021.sdf
 [CX3]=[NX2][OX2][H]				=N,=C,OH,-O			oxime
-[CX3](=[NX2][H])([NX3]([H])[H])[NX3]([H])[!H]	guan,=C,-N,amine,amine,amine,amine,amine,-N		guanidine group
+[CX3](=[NX2][H])([NX3]([H])[H])[NX3]([H])[!H]	-N,=C,-N,amine,amine,amine,amine,amine,-N		guanidine group
 [c,C]=[NX2][H]					=N,=C,-N			imine group
 [SX4](=[OX1])(=[OX1])[OX2,OX1]			sulfonic,=S,=S,-S		sulfonic acid group   *ions detected earlier
 [SX4](=*)(=*)(-[!O])(-[!O])			sulfone,=S,=S,-S,-S		sulfone group + derivates

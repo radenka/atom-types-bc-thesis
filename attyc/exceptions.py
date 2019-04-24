@@ -2,8 +2,11 @@ from termcolor import colored
 
 
 class Error(Exception):
-    def __init__(self, keyword, message, source=None):
-        print(colored(f'ERROR: Wrong \"{keyword}\" argument.', 'red'))
+    def __init__(self, keyword, message):
+        if keyword == 'smarts':
+            print(colored(f'ERROR: Wrong SMARTS file.', 'red'))
+        else:
+            print(colored(f'ERROR: Wrong \"{keyword}\" argument.', 'red'))
         self.message = message
 
 
@@ -22,9 +25,12 @@ class ClassifierNameError(Error):
         super().__init__(keyword, message)
 
 
-class InputSMARTSError(Exception):
-    def __init__(self, message, source=None):
-        super().__init__(message)
-        self.source = source
+class InputSMARTSError(Error):
+    def __init__(self, keyword, message):
+        super().__init__(keyword, message)
 
+
+class ClassifierClassError(Error):
+    def __init__(self, keyword, message):
+        super().__init__(keyword, message)
 

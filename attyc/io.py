@@ -1,9 +1,9 @@
 from rdkit import Chem
-import os
+import os, sys
 import re
 from pathlib import Path
 from collections import Counter
-from .exceptions import InputSMARTSError
+from .exceptions import InputSMARTSError, InputSDFileError
 
 #### just for my use ###########################
 
@@ -42,24 +42,68 @@ def get_available_classifiers():
     return classifiers
 
 
-def load_molecules(input_sdf):
+def load_molecules(input_sdf, is_pdb):
     """
-    :param input_sdf: sdfile containing molecules to classify
-    :return: SDMolSupplier containing Mol instances of molecules in given sdfile
+    :param input_sdf: sdfile contains molecules of atoms to classify
+    :return: SDMolSupplier contains Mol instances of molecules of given sdfile
     """
-    supplier = Chem.SDMolSupplier(input_sdf, removeHs=False)
-    if len(supplier) < 1:
-        print("Input SDFile doesn't contain any molecules. Check it and try again.\n"
-              "End of program.")
-        exit(1)
+    supplier = None
+    if is_pdb:
+        supplier = Chem.MolFromPDBFile(input_sdf, removeHs=False)
+    else:
+        supplier = Chem.SDMolSupplier(input_sdf, removeHs=False)
+        if len(supplier) < 1:
+            raise InputSDFileError("input_file", f"Input SDFile {input_sdf} doesn't contain any molecules. "
+                                                 f"Check it and try again.")
     return supplier
+
+
+def load_SMARTS(file):
+    SMARTS_and_atom_types = []
+    for line in file:
+        try:
+            SMARTS, atom_types, _ = re.split(r'\s+', line, 2)
+            atom_types = atom_types.split(',')
+            SMARTS_and_atom_types.append((SMARTS, atom_types))
+
+        except ValueError:
+            raise InputSMARTSError('smarts', 'Something went wrong while loading SMARTS and atom types from text file.'
+                                   ' Check the input file (each line should contain at least 2 columns). ')
+    return SMARTS_and_atom_types
+
+
+def load_PDB(file):
+    PDB_atom_types_supplier = {}
+    for line in file:
+        PDB_atom_type, residues_with_assigned_atom_types = re.split(r'\s+', line, 1)
+        residues_with_assigned_atom_types = residues_with_assigned_atom_types.strip()
+        values = []
+        for residue_and_atom_type in residues_with_assigned_atom_types.split(','):
+            residue, defined_atom_type = residue_and_atom_type.split(':')
+            values.append((residue, defined_atom_type))
+            # print(PDB_atom_type, values)
+        PDB_atom_types_supplier[PDB_atom_type] = values
+    return PDB_atom_types_supplier
+
+
+def load_external_atom_types(notation):
+    current_dir = os.path.dirname(__file__)
+    if not os.path.exists(os.path.join(current_dir, notation + '_atom_types.txt')):
+        # rewrite to ExternalTypesInputFileError
+        raise InputSMARTSError('input', f'{notation} input file not found. Check if file "{notation}_atom_types.txt" '
+                                        f'is located in the same directory as "io.py".')
+
+    with open(os.path.join(current_dir, notation + '_atom_types.txt')) as file:
+        if notation == 'SMARTS':
+            return load_SMARTS(file)
+        return load_PDB(file)
 
 
 def load_SMARTS_and_atom_types():
     current_dir = os.path.dirname(__file__)
     # print('Current directory of io.py:', current_dir) -> attyc
     if not os.path.exists(os.path.join(current_dir, 'SMARTS_atom_types.txt')):
-        raise InputSMARTSError('SMARTS input file not found. Check if file "SMARTS_atom_types.txt" is located '
+        raise InputSMARTSError('smarts','SMARTS input file not found. Check if file "SMARTS_atom_types.txt" is located '
                                'in the same directory as "io.py".')
 
     SMARTS_and_atom_types = []
@@ -71,14 +115,14 @@ def load_SMARTS_and_atom_types():
                 SMARTS_and_atom_types.append((SMARTS, atom_types))
 
             except ValueError:
-                raise InputSMARTSError('Something went wrong while loading SMARTS and atom types from text file.'
+                raise InputSMARTSError('smarts', 'Something went wrong while loading SMARTS and atom types from text file.'
                                        ' Check the input file (each line should contain at least 2 columns). ')
         return SMARTS_and_atom_types
 
 
-def create_output_file_for_parametrization(input_sdf, set_atom_types, classifier_name):
+def create_output_file_for_parametrization(input_sdf, is_pdb, set_atom_types, classifier_name):
     input_filename = os.path.basename(input_sdf)
-    if input_filename.endswith('.sdf'):
+    if input_filename.endswith('.sdf') or input_filename.endswith('.pdb'):
         input_filename = input_filename[:-4]
     # returns parent directory of directory where io.py is saved
     parent_dir = Path(__file__).resolve().parents[1]
@@ -86,7 +130,12 @@ def create_output_file_for_parametrization(input_sdf, set_atom_types, classifier
     if not os.path.isdir(os.path.join(parent_dir, output_dirname)):
         print(f'Creating directory {output_dirname}...')
         os.mkdir(os.path.join(parent_dir, output_dirname))
-    output_filename = f'{input_filename}SDF_{classifier_name}.txt'
+
+    if is_pdb:
+        file_extension = 'PDB'
+    else:
+        file_extension = 'SDF'
+    output_filename = f'{input_filename}{file_extension}_{classifier_name}.txt'
     print(f'Output filename: {output_filename},\n'
           f'path: {os.path.join(parent_dir, output_dirname, output_filename)}')
     with open(os.path.join(parent_dir, output_dirname, output_filename), 'w') as file:

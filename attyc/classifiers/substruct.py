@@ -2,14 +2,14 @@ from ..classifier import Classifier
 from rdkit import Chem
 from collections import Counter
 import pprint
-from ..io import load_SMARTS_and_atom_types
+from ..io import load_external_atom_types
 from ..io import create_output_paths, create_substruct_outputs
 
 
 class SubstructClassifier(Classifier):
     def __init__(self):
         super().__init__(__file__)
-        self.SMARTS_and_atom_types = load_SMARTS_and_atom_types()
+        self.SMARTS_and_atom_types = load_external_atom_types('SMARTS')
 
     def classifify_remaining_H(self, hydrogen):
         return '-' + str(hydrogen.GetNeighbors()[0].GetSymbol())
@@ -69,8 +69,6 @@ class SubstructClassifier(Classifier):
             # move completion higher - complete classification at 'molecule set' level ? better ?
         self.complete_classification(mol_atom_types, molecule)
         return mol_atom_types
-        # !!! get molecule name: mol.GetProp('_Name') -> returns NSC_1000089, NSC_100992 etc.
 
-    # former version, before "removeHS" in supplier was set to False:
-    # mol2 = Chem.AddHs(mol, addCoords=True)
+
 
