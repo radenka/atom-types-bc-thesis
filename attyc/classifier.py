@@ -13,7 +13,7 @@ class Classifier:
 
     def classify_atoms(self, supplier, is_pdb):
         if is_pdb:
-            # because supplier created from PDB file contains only one instance of class Mol
+            # because supplier created from PDB file is one instance of class Mol
             self.assigned_atom_types.append(
                 self.get_atom_types(supplier)
             )

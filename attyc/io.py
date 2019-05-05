@@ -148,4 +148,5 @@ def count_atom_types(set_atom_types):
     for mol_atom_types in set_atom_types:
         for atom_type in mol_atom_types:
             counter[atom_type] += 1
+    print(len(counter.items()))
     return counter

@@ -11,11 +11,11 @@ import inspect
 # protein incorporation in progress
 def check_arguments(input_sdf, classifier, file_output, screen_output):
     is_pdb = input_sdf.endswith('.pdb')
-    if is_pdb and classifier != 'peptide':
-        raise InputSDFileError('input', 'Wrong usage of classifiers! PDB format supports only "peptide" classifier.')
-
-    if not is_pdb and classifier == 'peptide':
-        raise InputSDFileError('input', 'Wrong usage of classifiers! Do not se "peptide" classifier for SDFiles.')
+    # if is_pdb and classifier != 'peptide':
+    #     raise InputSDFileError('input', 'Wrong usage of classifiers! PDB format supports only "peptide" classifier.')
+    #
+    # if not is_pdb and classifier == 'peptide':
+    #     raise InputSDFileError('input', 'Wrong usage of classifiers! Do not se "peptide" classifier for SDFiles.')
 
     if not os.path.exists(input_sdf):
         raise InputSDFileError('input_sdf',

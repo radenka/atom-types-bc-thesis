@@ -69,7 +69,7 @@ def pdb_trial():
 if __name__ == "__main__":
     args = load_arguments()
     if args:
-        classifier = None
+        # classifier = None
         try:
             attyc.classify_atoms(args.input_sdf, args.classifier, args.file_output, args.screen_output)
         except (InputSDFileError, FileScreenOutputError, ClassifierNameError, ClassifierClassError, InputSMARTSError) as ex:

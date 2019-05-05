@@ -9,10 +9,13 @@ from ..io import create_output_paths, create_substruct_outputs
 class SubstructClassifier(Classifier):
     def __init__(self):
         super().__init__(__file__)
-        self.SMARTS_and_atom_types = load_external_atom_types('SMARTS')
+        self.SMARTS_atom_types = load_external_atom_types('SMARTS')
 
     def classifify_remaining_H(self, hydrogen):
-        return '-' + str(hydrogen.GetNeighbors()[0].GetSymbol())
+        neigh = str(hydrogen.GetNeighbors()[0].GetSymbol())
+        if neigh == 'C' or neigh == 'N':
+            return neigh
+        return '1bond'
 
     def complete_classification(self, atom_types, molecule):
         for atm_idx, atom_type in enumerate(atom_types):
@@ -37,14 +40,14 @@ class SubstructClassifier(Classifier):
                     for neigh in atom.GetNeighbors():
                         # aromatic Hs detection
                         if neigh.GetAtomicNum() == 1:
-                            atom_types[neigh.GetIdx()] = f'-{atom.GetSymbol()}A'
+                            atom_types[neigh.GetIdx()] = f'{atom.GetSymbol()}'
 
     def get_atom_types(self, molecule):
         # list where the atom type labels will be put to
         mol_atom_types = [None] * molecule.GetNumAtoms()
         make_file = False
         self.analyze_aromatic_rings(molecule, mol_atom_types)
-        for pattern, loaded_atom_types in self.SMARTS_and_atom_types:
+        for pattern, loaded_atom_types in self.SMARTS_atom_types:
             if molecule.HasSubstructMatch(Chem.MolFromSmarts(pattern)):
                 pattern_atoms = molecule.GetSubstructMatches(Chem.MolFromSmarts(pattern))
                 for atom_tuple in pattern_atoms:
