@@ -11,8 +11,6 @@ Author: Radka Sedláková, 05-15-2019
 This program was developed as implementation part of "Atom types in methods for calculation of partial 
 atomic charges" thesis at Faculty of Science, Masaryk University in Brno, the Czech Republic. 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 ATTYC library provides atom type classification of SDF and PDB files based on hybridization, highest bond 
 order, structural motif membership and bonding partners of atom; special classification 'peptide' for PDB
@@ -60,21 +58,11 @@ Classifications based on data in SMARTS_atom_types.txt file and PDB_atom_types.t
 these classifications resulted computationally demanding. Simplified atom type classification text files can be 
 found in 'simplified_classifiers' directory. Replace original classification files located in 'attyc' directory 
 and rename them to 'SMARTS_atom_types.txt' and 'PDB_atom_types.txt' to run simplified classification. 
-To run simplified 'substruct' classification correctly, change following code lines of ATTYC library:
+To run simplified 'substruct' classification correctly:
 
 file substruct.py:
-1) change code of method "classifify_remaining_H(self, hydrogen)"	
-	- comment command "return '-' + str(hydrogen.GetNeighbors()[0].GetSymbol())"
-	- put following lines instead
-
-	neigh = str(hydrogen.GetNeighbors()[0].GetSymbol())
-        if neigh == 'C' or neigh == 'N':
-            return neigh
-        return '1bond'
-
-2) change last line in "analyze_aromatic_rings(self, molecule, atom_types)"
-	- original line "atom_types[neigh.GetIdx()] = f'-{atom.GetSymbol()}A'" replace with 
-                        "atom_types[neigh.GetIdx()] = f'{atom.GetSymbol()}'"
+Follow instructions in comments in methods "classifify_remaining_H(self, hydrogen)" and 
+					   "analyze_aromatic_rings(self, molecule, atom_types)".
 
 
 Wish you good luck with ATTYC!

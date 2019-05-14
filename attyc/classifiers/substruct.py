@@ -17,6 +17,12 @@ class SubstructClassifier(Classifier):
         """
         return '-' + str(hydrogen.GetNeighbors()[0].GetSymbol())
 
+        # UNCOMMENT following lines and COMMENT "initial classification" above to use simplified classification
+        # neigh = str(hydrogen.GetNeighbors()[0].GetSymbol())
+        # if neigh == 'C' or neigh == 'N':
+        #     return neigh
+        # return '1bond'
+
     def complete_classification(self, atom_types, molecule):
         for atm_idx, atom_type in enumerate(atom_types):
             if atom_type is None:
@@ -43,7 +49,12 @@ class SubstructClassifier(Classifier):
                     for neigh in atom.GetNeighbors():
                         # aromatic Hs detection
                         if neigh.GetAtomicNum() == 1:
+                            # initial classification
                             atom_types[neigh.GetIdx()] = f'-{atom.GetSymbol()}A'
+
+                            # UNCOMMENT following line command and COMMENT "initial classification" above
+                            # to use simplified classification
+                            # atom_types[neigh.GetIdx()] = f'{atom.GetSymbol()}'
 
     def get_atom_types(self, mol):
         """
