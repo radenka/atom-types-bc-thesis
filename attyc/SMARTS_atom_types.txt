@@ -33,4 +33,3 @@ N#N						diazon,diazon			diazonium group  *attached atoms not detected because o
 *-[NX2]=[NX2]-*					-N,azo,azo,-N			azo compound
 [NX2]=[OX1]					=O,=N				nitroso group     *rename both to 'nitroso'?
 [!#6][OX2][H]					-O,OH,-O			hydroxyl group (do after all sulfones, acis, phosphates etc.)
-

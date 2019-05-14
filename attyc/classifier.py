@@ -1,5 +1,5 @@
-from abc import abstractmethod
 import os
+from abc import abstractmethod
 
 
 class Classifier:
@@ -9,17 +9,25 @@ class Classifier:
 
     @abstractmethod
     def get_atom_types(self, mol):
+        """
+        Classifies atoms of molecule using specific classifier.
+        """
         pass
 
     def classify_atoms(self, supplier, is_pdb):
+        """
+        Runs atom types classification.
+        :param supplier: contains molecule(s) to classify
+        :param is_pdb: boolean to distinguish SDF and PDB file
+        :return: None
+        """
         if is_pdb:
-            # because supplier created from PDB file is one instance of class Mol
+            # supplier created from PDB file is instance of class Mol
             self.assigned_atom_types.append(
                 self.get_atom_types(supplier)
             )
         else:
             for i, mol in enumerate(supplier):
-                # print('Molecule no.', i)
                 self.assigned_atom_types.append(
                     self.get_atom_types(mol)
                 )

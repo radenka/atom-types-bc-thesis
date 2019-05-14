@@ -7,16 +7,25 @@ class PartnersClassifier(Classifier):
         super().__init__(__file__)
 
     def get_partners(self, atom):
+        """
+        Detects bonding partners of atom.
+        :param atom: atom to assign atom type to
+        :return: assigned atom type
+        """
         atom_type = atom.GetSymbol() + ":"
         neighs = []
         for neigh in atom.GetNeighbors():
             neighs.append(neigh.GetSymbol())
-        # sorted(neighs) creates new list, I use list.sort() instead
         neighs.sort()
         atom_type += "".join(neighs)
         return atom_type
 
     def get_atom_types(self, mol):
+        """
+        Classifies atoms of molecule using 'partners' classifier.
+        :param mol: molecule (instance of class Mol)
+        :return: list of assigned atom types
+        """
         mol_atom_types = []
         for i in range(mol.GetNumAtoms()):
             mol_atom_types.append(self.get_partners(mol.GetAtomWithIdx(i)))

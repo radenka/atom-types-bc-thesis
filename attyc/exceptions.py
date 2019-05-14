@@ -10,7 +10,7 @@ class Error(Exception):
         self.message = message
 
 
-class InputSDFileError(Error):
+class InputFileError(Error):
     def __init__(self, keyword, message):
         super().__init__(keyword, message)
 
@@ -25,7 +25,7 @@ class ClassifierNameError(Error):
         super().__init__(keyword, message)
 
 
-class InputSMARTSError(Error):
+class ExternalTypesInputFileError(Error):
     def __init__(self, keyword, message):
         super().__init__(keyword, message)
 

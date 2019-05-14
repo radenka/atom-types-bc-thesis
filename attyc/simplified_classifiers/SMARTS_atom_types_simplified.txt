@@ -1,0 +1,36 @@
+[F]						plain				F
+[Cl]						BrCl				Cl			
+[Br]						BrCl				Br
+[I]						plain				I
+[CX2]#[CX2]					alkyne,alkyne			alkyne carbons
+[!#15]-[SX2][H]					1bond,thio,1bond		thiol group with attached atom
+[PX4](=[X1])(-*)(-*)(-*)			phosphate,2bond,1bond,1bond,1bond		phosphate group
+[CX3](=[OX1])[OX2][CX3](=[OX1])			carbonyl,carbonyl,e(s)ther,carbonyl,carbonyl	anhydride 
+[CX3](=[OX1])[OX2]C				carbonyl,carbonyl,e(s)ther,plain		ester
+[CX3](=O)[OX1-]					carbonyl,carbonyl,OH		charged carboxylic acid
+[CX3](=O)[OX2][H1]				carbonyl,carbonyl,OH,1bond		carboxylic acid
+[CX4,c]O[CX4,c]					plain,e(s)ther,plain			ether
+[CX4,c][OX2][H]					plain,OH,1bond			alcohol group
+[NX3+](=O)[O-]					nitro,2bond,2bond		nitro group
+[OX1-;!$([OX1-]C(=O))&!$([OX1-]N(=O))]		OH				oxygen anion
+[#6]=[SX1]					carbonyl,thio			thiocarbonyl
+[!#6]=[SX1]					2bond,thio			other *=S groups (e.g. P=S) *better before amin/des
+[!#16]-SS-[!#16]				1bond,thio,thio,1bond		disulfide pattern
+[CX3](=[OX1])[NX3]([H])[H] 			carbonyl,carbonyl,Ngroup,N,N	primary amide
+[CX3](=[OX1])[NX3]([H])[!#1]			carbonyl,carbonyl,Ngroup,N,1bond	secondary amide
+[CX3](=[OX1])[NX3]([!#1])[!#1]			carbonyl,carbonyl,Ngroup,1bond,1bond		tertiary amide
+[C,c]=[OX1]					carbonyl,carbonyl		carbonyl group of aldehydes, ketones,!carboxylic acids or amides
+[NX1]#[CX2]					3bond,nitrile			nitrile group
+N#N						3bond,3bond			diazonium group  *attached atoms not detected because of mol13021.sdf
+[CX3]=[NX2][OX2][H]				plain,2bond,OH,1bond		oxime
+[CX3](=[NX2][H])([NX3]([H])[H])[NX3]([H])[!H]	plain,2bond,N,Ngroup,N,N,Ngroup,N,1bond		guanidine group
+[c,C]=[NX2][H]					plain,2bond,N			imine group
+[SX4](=[OX1])(=[OX1])[OX2,OX1]			sulfonic,2bond,2bond,1bond	sulfonic acid group   *ions detected earlier
+[SX4](=*)(=*)(-[!O])(-[!O])			sulfone,2bond,2bond,1bond,1bond	sulfone group + derivates
+[!#16]-[SX2]-[!#16]				1bond,thio,1bond		sulfide  *better to search after sulfones etc. (O-S-O  groups)
+[NX3;!$(NC=O)]([H])[H]				Ngroup,N,N			primary amine
+[NX3;!$(NC=O)]([H])([!#1])[!#1]			Ngroup,N,1bond,1bond		secondary amine
+[NX3;!$(NC=O)]([!#1])([!#1])[!#1]		Ngroup,1bond,1bond,1bond	tertiary amine
+*-[NX2]=[NX2]-*					1bond,2bond,2bond,1bond		azo compound
+[NX2]=[OX1]					2bond,2bond			nitroso group
+[!#6][OX2][H]					1bond,OH,1bond			hydroxyl group (do after all sulfones, acis, phosphates etc.)

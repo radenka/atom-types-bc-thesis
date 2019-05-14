@@ -1,21 +1,21 @@
-from ..classifier import Classifier
 from rdkit import Chem
-from collections import Counter
-import pprint
+from ..classifier import Classifier
 from ..io import load_external_atom_types
-from ..io import create_output_paths, create_substruct_outputs
 
 
 class SubstructClassifier(Classifier):
+
     def __init__(self):
         super().__init__(__file__)
-        self.SMARTS_atom_types = load_external_atom_types('SMARTS')
+        self.SMARTS_and_atom_types = load_external_atom_types('SMARTS')
 
     def classifify_remaining_H(self, hydrogen):
-        neigh = str(hydrogen.GetNeighbors()[0].GetSymbol())
-        if neigh == 'C' or neigh == 'N':
-            return neigh
-        return '1bond'
+        """
+        Assigns atom type to not classified hydrogen atom.
+        :param hydrogen: hydrogen atom
+        :return: assigned atom type
+        """
+        return '-' + str(hydrogen.GetNeighbors()[0].GetSymbol())
 
     def complete_classification(self, atom_types, molecule):
         for atm_idx, atom_type in enumerate(atom_types):
@@ -28,50 +28,39 @@ class SubstructClassifier(Classifier):
             atom_types[atm_idx] = atom_type
 
     def analyze_aromatic_rings(self, molecule, atom_types):
+        """
+        Assigns corresponding atom types to aromatic atoms.
+        :param molecule: molecule (instance of class Mol)
+        :param atom_types: list to store assigned atom types of molecule
+        :return: None
+        """
         rings = molecule.GetRingInfo().AtomRings()
         for ring in rings:
             for atm_idx in ring:
                 atom = molecule.GetAtomWithIdx(atm_idx)
-                # print(atom.GetSymbol(), atm_idx)
                 if atom.GetIsAromatic() and atom_types[atm_idx] is None:
                     atom_types[atm_idx] = 'A'
-                    # implicit and explicit Hs not detected, necessary to use brute force
-                    # methods Atom.GetNumExplicitHs(), .GetNumImplicitHs(), atom.GetTotalNumHs()) return 0 for each atom
                     for neigh in atom.GetNeighbors():
                         # aromatic Hs detection
                         if neigh.GetAtomicNum() == 1:
-                            atom_types[neigh.GetIdx()] = f'{atom.GetSymbol()}'
+                            atom_types[neigh.GetIdx()] = f'-{atom.GetSymbol()}A'
 
-    def get_atom_types(self, molecule):
-        # list where the atom type labels will be put to
-        mol_atom_types = [None] * molecule.GetNumAtoms()
-        make_file = False
-        self.analyze_aromatic_rings(molecule, mol_atom_types)
-        for pattern, loaded_atom_types in self.SMARTS_atom_types:
-            if molecule.HasSubstructMatch(Chem.MolFromSmarts(pattern)):
-                pattern_atoms = molecule.GetSubstructMatches(Chem.MolFromSmarts(pattern))
+    def get_atom_types(self, mol):
+        """
+        Classifies atoms of molecule using 'substruct' classifier.
+        :param mol: molecule (instance of class Mol)
+        :return: list of assigned atom types
+        """
+        mol_atom_types = [None] * mol.GetNumAtoms()
+        # aromatic atoms are detected first
+        self.analyze_aromatic_rings(mol, mol_atom_types)
+        for pattern, loaded_atom_types in self.SMARTS_and_atom_types:
+            if mol.HasSubstructMatch(Chem.MolFromSmarts(pattern)):
+                pattern_atoms = mol.GetSubstructMatches(Chem.MolFromSmarts(pattern))
                 for atom_tuple in pattern_atoms:
                     for atm_idx, atom_type in zip(atom_tuple, loaded_atom_types):
                         if mol_atom_types[atm_idx] is None:
                             mol_atom_types[atm_idx] = atom_type
-                # just for my own use
-                # if not make_file:
-                #     make_file = True
-                # a = molecule.GetAtomWithIdx(pattern_atoms[0][0])
-                # b = molecule.GetAtomWithIdx(pattern_atoms[0][2])
-                # c = molecule.GetAtomWithIdx(pattern_atoms[0][4])
-                # counter[a.GetSymbol()] += 1
-                # counter[b.GetSymbol()] += 1
-                # counter[c.GetSymbol()] += 1
-                # print(a.GetSymbol())   # , b.GetSymbol(), c.GetSymbol()
 
-                # just for my own use
-                # if make_file:
-                #     create_substruct_outputs(self.sdf_name, mol_idx, molecule)
-
-            # move completion higher - complete classification at 'molecule set' level ? better ?
-        self.complete_classification(mol_atom_types, molecule)
+        self.complete_classification(mol_atom_types, mol)
         return mol_atom_types
-
-
-
